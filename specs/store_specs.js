@@ -1,7 +1,7 @@
 var assert = require('assert')
 var Store = require('../store.js')
 var Record = require('../record.js')
-// var RecordCollector = require('../record_collector.js')
+var RecordCollector = require('../record_collector.js')
 
 describe('Store', function() {
 
@@ -9,14 +9,14 @@ describe('Store', function() {
   var record1;
   var record2;
   var record3;
-  // var recordCollector;
+  var recordCollector;
 
   beforeEach(function() {
     store = new Store("Southside Sounds", "Glasgow", 100.00);
     record1 = new Record("Arctic Monkeys", "AM", "Indie", 9.99);
     record2 = new Record("Arctic Monkeys", "Suck It and See", "Indie", 8.99);
     record3 = new Record("Daft Punk", "Discovery", "Electronic", 10.99);
-    // recordCollector = new RecordCollector();
+    recordCollector = new RecordCollector(20.00);
     store.addToInventory(record1);
     store.addToInventory(record2);
     store.addToInventory(record3);
@@ -42,13 +42,27 @@ describe('Store', function() {
     assert.strictEqual(store.returnAllInventory(), "Artist: Arctic Monkeys, Title: AM, Genre: Indie, Price:  9.99" + "\n" + "Artist: Arctic Monkeys, Title: Suck It and See, Genre: Indie, Price:  8.99" + "\n" + "Artist: Daft Punk, Title: Discovery, Genre: Electronic, Price:  10.99" + "\n")
   });
 
+  it("should be able to decrease balance when a record is bought", function () {
+    store.removeFromInventory(record1);
+    recordCollector.addRecord(record1);
+    store.buyRecord(record1, recordCollector);
+    assert.strictEqual(store.balance, 90.01);
+  });
+
+  it("should add a record from the inventory when the record is bought", function () {
+    store.removeFromInventory(record1);
+    recordCollector.addRecord(record1);
+    store.buyRecord(record1, recordCollector);
+    assert.strictEqual(store.inventory.length, 3);
+  });
+
   it("should be able to increase balance when a record is sold", function () {
-    store.sellRecord(record1);
+    store.sellRecord(record1, recordCollector);
     assert.strictEqual(store.balance, 109.99);
   });
 
   it("should remove a record from the inventory when the record is sold", function () {
-    store.sellRecord(record1);
+    store.sellRecord(record1, recordCollector);
     assert.strictEqual(store.inventory.length, 2);
   });
 

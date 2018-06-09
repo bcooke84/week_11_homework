@@ -1,3 +1,5 @@
+var RecordCollector = require('./record_collector.js')
+
 var Store = function (name, city, balance) {
   this.name = name;
   this.city = city;
@@ -9,6 +11,13 @@ Store.prototype.addToInventory = function (record) {
   this.inventory.push(record);
 };
 
+Store.prototype.removeFromInventory = function (record) {
+  let index = this.inventory.indexOf(record);
+  if (index > -1) {
+    this.inventory.splice(index, 1);
+  }
+};
+
 Store.prototype.returnAllInventory = function () {
   let results = ""
   this.inventory.forEach(function(record) {
@@ -17,11 +26,19 @@ Store.prototype.returnAllInventory = function () {
   return results;
 };
 
-Store.prototype.sellRecord = function (record) {
-  let index = this.inventory.indexOf(record);
-  if (index > -1) {
-    this.inventory.splice(index, 1);
+Store.prototype.sellRecord = function (record, recordCollector) {
+  if(recordCollector.buyRecord(record) === true ) {
     this.balance += record.price;
+    this.removeFromInventory(record);
+    return this.balance;
+  }
+};
+
+Store.prototype.buyRecord = function (record, recordCollector) {
+  if (this.balance >= record.price) {
+    this.balance -= record.price;
+    this.addToInventory(record);
+    recordCollector.sellRecord(record);
   }
   return this.balance;
 };
