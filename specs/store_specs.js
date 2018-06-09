@@ -38,5 +38,31 @@ describe('Store', function() {
     assert.strictEqual(store.inventory.length, 3);
   });
 
+  it("should be able to list the inventory", function() {
+    assert.strictEqual(store.returnAllInventory(), "Artist: Arctic Monkeys, Title: AM, Genre: Indie, Price:  9.99" + "\n" + "Artist: Arctic Monkeys, Title: Suck It and See, Genre: Indie, Price:  8.99" + "\n" + "Artist: Daft Punk, Title: Discovery, Genre: Electronic, Price:  10.99" + "\n")
+  });
+
+  it("should be able to increase balance when a record is sold", function () {
+    store.sellRecord(record1);
+    assert.strictEqual(store.balance, 109.99);
+  });
+
+  it("should remove a record from the inventory when the record is sold", function () {
+    store.sellRecord(record1);
+    assert.strictEqual(store.inventory.length, 2);
+  });
+
+  it("should report the store balance and value of store inventory", function() {
+    assert.strictEqual(store.financialReport(), "The store balance is: £100.00" + "\n" + "The value of the inventory is £29.97")
+  })
+
+  it("should return all records from inventory of a specified genre", function() {
+    assert.strictEqual(store.recordsByGenre("Indie").length, 2)
+  })
+
+  it("should be able to log all records of a specified genre", function() {
+    assert.strictEqual(store.viewRecordsByGenre("indie"), "Artist: Arctic Monkeys, Title: AM, Genre: Indie, Price:  9.99" + "\n" + "Artist: Arctic Monkeys, Title: Suck It and See, Genre: Indie, Price:  8.99" + "\n")
+  });
+
 
 });

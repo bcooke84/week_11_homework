@@ -27,5 +27,9 @@ describe('Record', function() {
     assert.strictEqual(record1.price, 9.99);
   });
 
+  it("should print Record properties out", function() {
+    assert.strictEqual(record1.printProperties(), "Artist: Arctic Monkeys, Title: AM, Genre: Indie, Price:  9.99" + "\n")
+  });
+
 
 });
